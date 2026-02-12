@@ -1,36 +1,50 @@
-package com.aquila.auth.controller;
+package com.aquila.auth;
 
-import org.springframework.web.bind.annotation.*;
-import java.util.*;
+import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
 
-@RestController
-@RequestMapping("/auth")
-public class AuthController {
+public class AuthServer {
 
-    private Map<String, String> users = new HashMap<>();
+    private static UserStore store = new UserStore();
 
-    @GetMapping("/health")
-    public String health() {
-        return "Auth Service Running";
+    public static void main(String[] args) throws IOException {
+        HttpServer server = HttpServer.create(new InetSocketAddress(8080), 0);
+
+        server.createContext("/health", exchange ->
+                sendResponse(exchange, 200, "{\"status\":\"Auth Service Running\"}")
+        );
+
+        server.createContext("/register", exchange -> {
+            if ("POST".equals(exchange.getRequestMethod())) {
+                store.addUser("demo", "password");
+                sendResponse(exchange, 201, "{\"message\":\"User registered\"}");
+            }
+        });
+
+        server.createContext("/login", exchange -> {
+            if ("POST".equals(exchange.getRequestMethod())) {
+                boolean valid = store.validate("demo", "password");
+                if (valid) {
+                    sendResponse(exchange, 200, "{\"message\":\"Login successful\"}");
+                } else {
+                    sendResponse(exchange, 401, "{\"message\":\"Invalid credentials\"}");
+                }
+            }
+        });
+
+        server.setExecutor(null);
+        server.start();
+        System.out.println("Auth Service started on port 8080");
     }
 
-    @PostMapping("/register")
-    public String register(@RequestParam String username,
-                           @RequestParam String password) {
-
-        users.put(username, password);
-        return "User Registered";
-    }
-
-    @PostMapping("/login")
-    public String login(@RequestParam String username,
-                        @RequestParam String password) {
-
-        if (users.containsKey(username) &&
-            users.get(username).equals(password)) {
-            return "Login Successful";
+    private static void sendResponse(HttpExchange exchange, int status, String body) throws IOException {
+        exchange.getResponseHeaders().add("Content-Type", "application/json");
+        exchange.sendResponseHeaders(status, body.length());
+        try (OutputStream os = exchange.getResponseBody()) {
+            os.write(body.getBytes());
         }
-
-        return "Invalid Credentials";
     }
 }
