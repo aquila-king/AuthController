@@ -1,0 +1,13 @@
+@Library('shared-lib') _
+
+deployMicroservice(
+    repoUrl: 'https://github.com/aquila-king/AuthController.git',
+    imageName: 'kuunyangna/auth-controller',
+    namespace: 'auth-namespace',
+    helmChart: './helm',
+    helmRelease: 'auth-release',
+    dockerCreds: 'docker-cred',
+    jdk: 'jdk',
+    maven: 'mvn',
+    branch: 'main'
+)
