@@ -1,24 +1,25 @@
-AapiVersion: apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ .Release.Name }}
+  name: {{ .Values.releaseName }}
+  namespace: {{ .Values.namespace }}
   labels:
-    app: {{ .Release.Name }}
+    app: {{ .Values.releaseName }}
 spec:
   replicas: {{ .Values.replicaCount }}
   selector:
     matchLabels:
-      app: {{ .Release.Name }}
+      app: {{ .Values.releaseName }}
   template:
     metadata:
       labels:
-        app: {{ .Release.Name }}
+        app: {{ .Values.releaseName }}
     spec:
       containers:
-        - name: {{ .Release.Name }}
+        - name: {{ .Values.releaseName }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
           ports:
-            - containerPort: 8080
+            - containerPort: {{ .Values.service.targetPort }}
           resources:
             requests:
               cpu: {{ .Values.resources.requests.cpu }}
