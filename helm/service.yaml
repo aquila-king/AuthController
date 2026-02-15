@@ -1,15 +1,13 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{ .Release.Name }}          # Release name, e.g., order-release-blue
+  name: {{ .Values.service.name }}
   namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ .Release.Name }}
 spec:
-  type: LoadBalancer                  # This tells Kubernetes to provision a cloud LB
+  type: LoadBalancer
   selector:
-    app: {{ .Release.Name }}          # Must match Deployment labels
+    app: {{ .Release.Name }}
   ports:
     - name: http
-      port: {{ .Values.service.port | default 8080 }}      # External LB port
-      targetPort: {{ .Values.service.port | default 8080 }} # Container port
+      port: {{ .Values.service.port }}
+      targetPort: 8080
