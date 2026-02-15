@@ -2,6 +2,7 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aquila</groupId>
@@ -19,13 +20,13 @@
     </properties>
 
     <dependencies>
-        <!-- Example: HTTP server dependency -->
+        <!-- HTTP server dependency -->
         <dependency>
             <groupId>com.sun.net.httpserver</groupId>
             <artifactId>http</artifactId>
             <version>20070405</version>
         </dependency>
-        <!-- Add other dependencies your app needs -->
+        <!-- Add other dependencies your app requires -->
     </dependencies>
 
     <build>
@@ -59,4 +60,5 @@
             </plugin>
         </plugins>
     </build>
+
 </project>
