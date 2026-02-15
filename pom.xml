@@ -2,7 +2,6 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0
                              http://maven.apache.org/maven-v4_0_0.xsd">
-
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>com.aquila</groupId>
@@ -26,7 +25,7 @@
             <artifactId>http</artifactId>
             <version>20070405</version>
         </dependency>
-        <!-- Add other dependencies your app requires -->
+        <!-- Add other dependencies here -->
     </dependencies>
 
     <build>
@@ -37,7 +36,7 @@
                 <version>3.11.0</version>
             </plugin>
 
-            <!-- Shade plugin to create a fat/executable JAR -->
+            <!-- Shade plugin to create fat/executable JAR -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-shade-plugin</artifactId>
@@ -60,5 +59,4 @@
             </plugin>
         </plugins>
     </build>
-
 </project>
