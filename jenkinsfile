@@ -11,7 +11,6 @@ pipeline {
     }
 
     stages {
-
         stage('Cleanup') {
             steps {
                 cleanWs()
@@ -41,31 +40,37 @@ pipeline {
                 sh '''
                     echo $DOCKER_CREDS_PSW | docker login -u $DOCKER_CREDS_USR --password-stdin
                     docker push kuunyangna/myapp-11:v2
-                    docker logout
                 '''
             }
         }
 
         stage('Deploy to EKS') {
             steps {
-                withCredentials([usernamePassword(
-                    credentialsId: 'aws-cred',
-                    usernameVariable: 'AWS_ACCESS_KEY_ID',
-                    passwordVariable: 'AWS_SECRET_ACCESS_KEY'
-                )]) {
+withCredentials([usernamePassword(
+    credentialsId: 'aws-cred',
+    usernameVariable: 'AWS_ACCESS_KEY_ID',
+    passwordVariable: 'AWS_SECRET_ACCESS_KEY'
+)]) {
+{
                     sh '''
+                        # Update kubeconfig to connect Jenkins to your EKS cluster
                         aws eks update-kubeconfig --region us-east-1 --name mycluster-Aquila
 
+                        # Ensure we are in the repo directory
+                        cd $WORKSPACE
+
+                        # Apply Kubernetes manifests
                         kubectl apply -f k8-deployment.yaml
                         kubectl apply -f k8-service.yaml
 
-                        kubectl set image deployment/myapp-deployment \
-                        myapp-container=kuunyangna/myapp-11:v2 --record
+                        # Update deployment to new Docker image
+                        kubectl set image deployment/myapp-deployment myapp-container=kuunyangna/myapp-11:v2 --record
 
+                        # Wait for rollout to complete
                         kubectl rollout status deployment/myapp-deployment
                     '''
                 }
             }
         }
     }
-}
+}align this
