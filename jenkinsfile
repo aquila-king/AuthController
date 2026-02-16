@@ -3,11 +3,11 @@ pipeline {
 
     tools {
         maven 'mvn'
-        jdk 'JDK'
+        jdk 'jdk'
     }
 
     environment {
-        DOCKER_CREDS = credentials('docker')
+        DOCKER_CREDS = credentials('docker-cred')
     }
 
     stages {
@@ -46,11 +46,10 @@ pipeline {
 
         stage('Deploy to EKS') {
             steps {
-                withCredentials([aws(credentialsId: 'aws-creds', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
+                withCredentials([aws(credentialsId: 'aws-cred', accessKeyVariable: 'AWS_ACCESS_KEY_ID', secretKeyVariable: 'AWS_SECRET_ACCESS_KEY')]) {
                     sh '''
                         # Update kubeconfig to connect Jenkins to your EKS cluster
-                        aws eks update-kubeconfig --region us-east-1 --name mycluster-Aquila
-
+                        aws eks update-kubeconfig --region us-east-1 --name aquila-cluster
                         # Ensure we are in the repo directory
                         cd $WORKSPACE
 
