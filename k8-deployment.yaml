@@ -1,35 +1,22 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: myapp-deployment
+  name: auth-service-deployment
   labels:
-    app: myapp
+    app: auth-service
 spec:
   replicas: 2
   selector:
     matchLabels:
-      app: myapp
+      app: auth-service
   template:
     metadata:
       labels:
-        app: myapp
+        app: auth-service
     spec:
       containers:
-      - name: myapp-container
-        image: kuunyangna/myapp-11:v2
-        imagePullPolicy: Always   
+      - name: auth-service-container
+        image: kuunyangna/auth-service:v2
+        imagePullPolicy: Always
         ports:
-        - containerPort: 80
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: myapp-service
-spec:
-  type: LoadBalancer
-  selector:
-    app: myapp
-  ports:
-  - protocol: TCP
-    port: 80
-    targetPort: 80
+        - containerPort: 8080
