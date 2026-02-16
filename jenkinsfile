@@ -3,5 +3,6 @@
 deployMicroservice(
     repoUrl: 'https://github.com/aquila-king/AuthController.git', 
     imageName: 'auth-service', 
-    namespace: 'auth-namespace'
+    namespace: 'auth-namespace',
+    clusterName: 'aquila-cluster'
 )
