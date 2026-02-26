@@ -3,10 +3,12 @@ kind: Service
 metadata:
   name: auth-service
   namespace: auth-namespace
+  annotations:
+    service.beta.kubernetes.io/aws-load-balancer-healthcheck-path: /   # ALB health check
 spec:
   type: LoadBalancer
   selector:
-    app: auth
+    app: auth-service
   ports:
   - protocol: TCP
     port: 80
