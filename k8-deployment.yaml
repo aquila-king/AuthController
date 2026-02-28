@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: auth-service-deployment   # matches ${imageName}-deployment
+  name: auth-service-deployment
   namespace: auth-namespace
   labels:
     app: auth-service
@@ -16,7 +16,7 @@ spec:
         app: auth-service
     spec:
       containers:
-      - name: auth-service-container   # matches ${imageName}-container
+      - name: auth-service-container
         image: kuunyangna/auth-service:v1
         ports:
         - containerPort: 80
@@ -32,3 +32,30 @@ spec:
             port: 80
           initialDelaySeconds: 15
           periodSeconds: 20
+        resources:
+          requests:
+            cpu: "250m"       # minimum CPU guaranteed
+            memory: "256Mi"   # minimum memory guaranteed
+          limits:
+            cpu: "500m"       # maximum CPU allowed
+            memory: "512Mi"   # maximum memory allowed
+---
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: auth-service-hpa
+  namespace: auth-namespace
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: auth-service-deployment
+  minReplicas: 2
+  maxReplicas: 5
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      target:
+        type: Utilization
+        averageUtilization: 70
